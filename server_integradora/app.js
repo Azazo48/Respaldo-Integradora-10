@@ -32,9 +32,9 @@ app.use(cors());
 
 app.post("/usuariosc", async (req, res) => {
     console.log(req.body);
-    const { nombre, apellido, correo, contrasena } = req.body;
+    const { nombre, apellido, correo, contrasena, telefono } = req.body;
     try {
-        await crearUsuario(nombre, apellido, correo, contrasena);
+        await crearUsuario(nombre, apellido, correo, contrasena, telefono);
         res.status(201).json({ message: "Usuario creado exitosamente." });
     } catch (error) {
         console.error(error);

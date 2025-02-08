@@ -29,7 +29,7 @@ const RegistroUserScreen = () => {
         }
         try {
             //const response = await fetch(`http://localhost:3000/usuariosc?nombre=${encodeURIComponent(nombre)}&apellido=${encodeURIComponent(apellido)}&correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`);
-            const response = await fetch('http://localhost:3000/usuariosc', {
+            const response = await fetch('https://solobackendintegradora.onrender.com/usuariosc', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -35,7 +35,7 @@ const PerfilScreen = () => {
         if (userId) {
             const fetchInfoUsuario = async () => {
                 try {
-                    const response = await fetch(`http://localhost:3000/usuarios/${userId}`);
+                    const response = await fetch(`https://solobackendintegradora.onrender.com/usuarios/${userId}`);
                     const data = await response.json();
                     if (data && data[0] && data[0][0]) {
                         setInfoUsuario(data[0][0]);

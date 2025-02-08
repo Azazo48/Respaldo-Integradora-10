@@ -108,10 +108,10 @@ export async function LoginUsuario(correo, contrasena) {
 return rows;
 }
 
-export async function crearUsuario(nombre, apellido, correo, contrasena) {
+export async function crearUsuario(nombre, apellido, correo, contrasena, telefono) {
   const [rows] = await pool.query(
-    'CALL CrearUsuario(?,?,?,?)',
-    [nombre, apellido, correo, contrasena]
+    'CALL CrearUsuario(?,?,?,?,?)',
+    [nombre, apellido, correo, contrasena, telefono]
 );
 return rows;
 }

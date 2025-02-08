@@ -20,7 +20,7 @@ const LoginScreen = () => {
             return;
         }
         try {
-        const url = `http://localhost:3000/login?correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
+        const url = `https://solobackendintegradora.onrender.com/login?correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
         const response = await fetch(url, { method: 'GET' });
         const data = await response.json();
         //console.log(data);
