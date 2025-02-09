@@ -9,8 +9,9 @@ const RegistroUserScreen = () => {
     const [apellido, setApellido] = useState('');
     const [correo, setCorreo] = useState('');
     const [contrasena, setContrasena] = useState('');
+    const [telefono, setTelefono] = useState('');
 
-    const crearnuevousuario = async () => {nombre, apellido, correo, contrasena
+    const crearnuevousuario = async () => {
         if (!nombre.trim()) {
             Alert.alert("Error", "El nombre es obligatorio");
             return;
@@ -27,8 +28,12 @@ const RegistroUserScreen = () => {
             Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
             return;
         }
+        if (!telefono.trim() || telefono.length < 10) {
+            Alert.alert("Error", "El número de teléfono debe tener al menos 10 dígitos");
+            return;
+        }
+
         try {
-            //const response = await fetch(`http://localhost:3000/usuariosc?nombre=${encodeURIComponent(nombre)}&apellido=${encodeURIComponent(apellido)}&correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`);
             const response = await fetch('https://solobackendintegradora.onrender.com/usuariosc', {
                 method: 'POST',
                 headers: {
@@ -38,24 +43,22 @@ const RegistroUserScreen = () => {
                     nombre: nombre,
                     apellido: apellido,
                     correo: correo,
-                    contrasena: contrasena
+                    contrasena: contrasena,
+                    telefono: telefono
                 })
-                });
-                const result = await response.json();
-                //console.log(result)
-
-            //console.log(nombre, apellido, correo, contrasena)
-            Alert.alert("Te has Regristrado!");
+            });
+            const result = await response.json();
+            Alert.alert("Te has Registrado!");
             navigation.navigate("LoginScreen");
-            } catch (error) {
-                console.error("Error al crear usuario", error);
-            }
-        };
+        } catch (error) {
+            console.error("Error al crear usuario", error);
+        }
+    };
 
-//Fuentes Personalizadas
-const [fontsLoaded] = useFonts({
-    Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),
-});
+    // Fuentes Personalizadas
+    const [fontsLoaded] = useFonts({
+        Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),
+    });
 
     return (
         <View style={styles.container}>
@@ -86,6 +89,13 @@ const [fontsLoaded] = useFonts({
                 onChangeText={setContrasena}
                 secureTextEntry={true}
             />
+            <TextInput
+                style={styles.input}
+                placeholder="Teléfono"
+                value={telefono}
+                onChangeText={setTelefono}
+                keyboardType="phone-pad"
+            />
             <TouchableOpacity style={styles.button} onPress={crearnuevousuario}>
                 <Text style={styles.buttonRegistro}>Registrarse</Text>
             </TouchableOpacity>
@@ -98,6 +108,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f1f1ec',
         padding: 20,
+        borderColor: "#cbcbbe",
+        borderWidth: 2
     },
     title: {
         fontSize: 25,

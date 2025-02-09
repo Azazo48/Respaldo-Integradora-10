@@ -21,7 +21,7 @@ import {
     obtenerCitasUsuario,
     obtenerCitaUnica,
     cancelarCita,
-    LoginUsuario
+    Login
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -52,26 +52,25 @@ app.get("/usuarios/:id", async (req, res) => {
     }
 });
 
-app.get("/login", async (req, res) => {
-    const { correo, contrasena } = req.query;
+app.post("/login", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log(correo, contrasena);
+    
     try {
-        const usuario = await LoginUsuario(correo, contrasena);
+        const usuario = await Login(correo, contrasena);
         res.status(200).json(usuario);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
 
 
-
-
-
 //Empresas --------------------------------------------------
 app.post("/empresas", async (req, res) => {
-    const { nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen } = req.body;
-
+    const { nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen } = req.body;
     try {
-        await agregarEmpresa( nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen );
+        await agregarEmpresa( nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen );
         res.status(201).json({ message: "Empresa agregada exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo agregar la empresa." });
@@ -248,7 +247,6 @@ app.get("/citas/empresa/:empresa_id", async (req, res) => {
 
 app.get("/citas/usuario/:usuario_id", async (req, res) => {
     const { usuario_id } = req.params;
-
     try {
         const citas = await obtenerCitasUsuario(Number(usuario_id));
         res.status(200).json(citas);

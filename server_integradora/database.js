@@ -11,10 +11,10 @@ const pool = mysql.createPool({
 }).promise();
 
 // Procedimientos para Empresas
-export async function agregarEmpresa(nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen) {
+export async function agregarEmpresa(nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen) {
   const [rows] = await pool.query(
     'CALL AgregarEmpresa(?, ?, ?, ?, ?, ?, ?, ?)',
-    [nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen]
+    [nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen]
 );
 return rows;
 
@@ -100,7 +100,7 @@ return rows;
 }
 
 // Procedimientos para Usuarios//////////////////////////////////////////////////////////////////////////////////////////////
-export async function LoginUsuario(correo, contrasena) {
+export async function Login(correo, contrasena) {
   const [rows] = await pool.query(
     'call Login(?,?)',
     [correo, contrasena]

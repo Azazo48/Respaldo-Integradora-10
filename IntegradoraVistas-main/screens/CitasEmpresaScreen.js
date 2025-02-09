@@ -40,11 +40,10 @@ const CitasEmpresaScreen = () => {
     );
   };
 
-//Fuentes Personalizadas
-    const [fontsLoaded] = useFonts({
-    Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),
-    Raleway: require('../assets/Raleway-VariableFont_wght.ttf'),
-    });
+  const [fontsLoaded] = useFonts({
+    Playfair: require("../assets/PlayfairDisplay-VariableFont_wght.ttf"),
+    Raleway: require("../assets/Raleway-VariableFont_wght.ttf"),
+  });
 
   const renderCitas = (citas) => (
     <ScrollView>
@@ -95,10 +94,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
     fontFamily: "Playfair",
-    marginTop: "5%"
+    marginTop: "5%",
   },
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fdf8d5",
     borderRadius: 10,
     padding: 20,
     marginVertical: 10,
@@ -107,21 +106,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    borderLeftWidth: 5,
-    borderLeftColor: "#266150",
   },
   serviceTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#033d3e",
     marginBottom: 10,
-    fontFamily: "Raleway"
+    fontFamily: "Raleway",
   },
   serviceDetails: {
     fontSize: 16,
     color: "#033d3e",
     marginBottom: 5,
-    fontFamily: "Raleway"
+    fontFamily: "Raleway",
   },
   cancelButton: {
     marginTop: 15,

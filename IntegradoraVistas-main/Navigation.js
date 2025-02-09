@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { NavigationContainer } from "@react-navigation/native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
+import Entypo from '@expo/vector-icons/Entypo';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Pantallas
 import HomeScreen from "./screens/HomeScreen";
@@ -15,6 +16,7 @@ import DentroLocalScreen from "./screens/DentroLocalScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegistroEmpresaScreen from "./screens/RegistroEmpresaScreen";
 import ReservarScreen from "./screens/ReservarScreen";
+import ServiciosScreen from "./screens/ServiciosScreen";
 import CitasEmpresaScreen from "./screens/CitasEmpresaScreen";
 
 const HomeStackNavigator = createNativeStackNavigator();
@@ -53,11 +55,7 @@ function MyStack() {
                 component={ReservarScreen}
             />
             <HomeStackNavigator.Screen
-                name="CitasEmpresa"
-                component={CitasEmpresaScreen}
-            />
-            <HomeStackNavigator.Screen
-                name="PerfilScree"
+                name="PerfilScreen"
                 component={PerfilScreen}
             />
         </HomeStackNavigator.Navigator>
@@ -70,8 +68,10 @@ function PerfilStack() {
     return (
         <PerfilStackNavigator.Navigator screenOptions={{ headerShown: false }}>
             <PerfilStackNavigator.Screen name="PerfilScreen" component={PerfilScreen} />
+            <PerfilStackNavigator.Screen name="HomeScreen" component={HomeScreen} />
             <PerfilStackNavigator.Screen name="Registro" component={RegistroUserScreen} />
             <PerfilStackNavigator.Screen name="LoginScreen" component={LoginScreen} />
+            <PerfilStackNavigator.Screen name="RegistroEmpresa" component={RegistroEmpresaScreen} />
         </PerfilStackNavigator.Navigator>
     );
 }
@@ -79,6 +79,23 @@ function PerfilStack() {
 const Tab = createBottomTabNavigator();
 
 function Mytabs() {
+    const [userType, setUserType] = useState('');
+
+    useEffect(() => {
+        const loadUserType = async () => {
+            try {
+                const storedUserType = await AsyncStorage.getItem("userType");
+                setUserType(storedUserType ? storedUserType : null);
+            } catch (error) {
+                console.error("Error obteniendo user", error);
+            }
+        };
+        loadUserType();
+        const intervalo = setInterval(
+            loadUserType, 3000);
+        return () => clearInterval(intervalo);
+    }, []);
+
     return (
         <Tab.Navigator
         initialRouteName="Home"
@@ -103,7 +120,8 @@ function Mytabs() {
                     ),
                     headerShown: false,
                 }}
-            />{userId == 2 && (
+            />
+
             <Tab.Screen 
                 name="Perfil" 
                 component={PerfilStack}
@@ -114,8 +132,9 @@ function Mytabs() {
                     ),
                     headerShown: false,
                 }}
-            />)}
+            />
 
+            {userType == "usuario" && (
             <Tab.Screen 
                 name="Citas" 
                 component={CitasScreen} 
@@ -127,6 +146,35 @@ function Mytabs() {
                     headerShown: false,
                 }}
             />
+            )}
+
+            {userType == "empresa" && (
+            <Tab.Screen 
+                name="CitasEmpresa" 
+                component={CitasEmpresaScreen} 
+                options={{
+                    tabBarLabel: 'Citas',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="calendar" size={24} color="#266150" />
+                    ),
+                    headerShown: false,
+                }}
+            />
+            )}
+
+            {userType == "empresa" && (
+            <Tab.Screen 
+                name="RegistroServicios" 
+                component={ServiciosScreen} 
+                options={{
+                    tabBarLabel: 'Servicios',
+                    tabBarIcon: ({ color, size }) => (
+                        <Entypo name="add-to-list" size={24} color="#266150" />
+                    ),
+                    headerShown: false,
+                }}
+            />
+            )}
         </Tab.Navigator>
     );
 }

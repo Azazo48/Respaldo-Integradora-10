@@ -12,7 +12,7 @@ const RegistroEmpresaScreen = () => {
     const [correoAdmin, setCorreoAdmin] = useState('');
     const [contrasena, setContrasena] = useState('');
 
-    const validarFormulario = () => {
+    const crearNuevaEmpresa = async () => {
         if (!nombre.trim()) {
             Alert.alert("Error", "El nombre de la empresa es obligatorio");
             return;
@@ -42,6 +42,28 @@ const RegistroEmpresaScreen = () => {
             return;
         }
         Alert.alert("Éxito", "Registro empresarial exitoso");
+        try {
+            const response = await fetch('https://solobackendintegradora.onrender.com/empresas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre: nombre,
+                    rfc: rfc,
+                    direccion: direccion,
+                    correoEmpresa: correoEmpresa,
+                    telefono: telefono,
+                    correoAdmin: correoAdmin,
+                    contrasena: contrasena
+                })
+            });
+            const result = await response.json();
+            Alert.alert("Te has Registrado!");
+            navigation.navigate("LoginScreen");
+        } catch (error) {
+            console.error("Error al crear usuario", error);
+        }
     };
 
 
@@ -99,7 +121,7 @@ const [fontsLoaded] = useFonts({
                 onChangeText={setContrasena}
                 secureTextEntry={true}
             />
-            <TouchableOpacity style={styles.button} onPress={validarFormulario}>
+            <TouchableOpacity style={styles.button} onPress={crearNuevaEmpresa}>
                 <Text style={styles.buttonRegistro}>Registrar Empresa</Text>
             </TouchableOpacity>
         </View>
@@ -111,6 +133,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f1f1ec',
         padding: 20,
+        borderColor: "#cbcbbe",
+        borderWidth: 2
     },
     title: {
         fontSize: 25,

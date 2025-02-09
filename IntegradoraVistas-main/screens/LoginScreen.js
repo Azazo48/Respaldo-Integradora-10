@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
-    const [nombre, setNombre] = useState('');
     const navigation = useNavigation();
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
@@ -15,41 +14,56 @@ const LoginScreen = () => {
             Alert.alert("Error", "El correo debe ser válido");
             return;
         }
-        if (contrasena.length < 2) {//Modificar en la version final(esta en 2 para facilitar las pruevas)
+        if (contrasena.length < 2) { // Modificar en la versión final (actualmente en 2 para facilitar pruebas)
             Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
             return;
         }
         try {
-        const url = `https://solobackendintegradora.onrender.com/login?correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
-        const response = await fetch(url, { method: 'GET' });
-        const data = await response.json();
-        //console.log(data);
-    
-        if (data && data[0] && data[0][0] && data[0][0].id) {
-            await AsyncStorage.setItem("userId", data[0][0].id.toString());
-            navigation.navigate("PerfilScreen");
-        } else {
-            Alert.alert("Error en las credenciales");
-        }
+            const response = await fetch('https://solobackendintegradora.onrender.com/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    correo: correo,
+                    contrasena: contrasena,
+                })
+            });
+            const data = await response.json();
+            //const url = `https://solobackendintegradora.onrender.com/login?correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
+            //const response = await fetch(url, { method: 'GET' });
+            //const data = await response.json();
+            if (data && data[0] && data[0][0] && data[0][0].id) {
+                await AsyncStorage.setItem("userId", data[0][0].id.toString());
+                await AsyncStorage.setItem("userType", data[0][0].tipo.toString());
+                const userType = await AsyncStorage.getItem("userType");
+                console.log(data[0][0])
+                console.log(data[0][0].tipo)
+                console.log(data)
+                if(userType == "empresa"){
+                    navigation.navigate("HomeScreen");
+                }
+                if(userType == "usuario"){
+                    navigation.navigate("PerfilScreen");
+                }
+                
+            } else {
+                Alert.alert("Error en las credenciales");
+            }
         } catch (error) {
-        console.error("Error de conexión", error);
-        Alert.alert("Error de conexión");
+            console.error("Error de conexión", error);
+            Alert.alert("Error de conexión");
         }
     };
 
-//Fuentes Personalizadas
-const [fontsLoaded] = useFonts({
-    Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),
-});
+    // Fuentes Personalizadas
+    const [fontsLoaded] = useFonts({
+        Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),
+    });
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Inicia de sesion</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                value={nombre}
-                onChangeText={setNombre}
-            />
+            <Text style={styles.title}>Inicia sesión</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Correo"
@@ -65,8 +79,15 @@ const [fontsLoaded] = useFonts({
                 secureTextEntry={true}
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonRegistro}>Inicia Sesion</Text>
+                <Text style={styles.buttonText}>Inicia Sesión</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate("RegistroEmpresa")}>
+                <Text style={styles.registerText}>
+                    ¿Eres una empresa? ¡Regístrate con nosotros!
+                </Text>
+</TouchableOpacity>
+
         </View>
     );
 };
@@ -76,6 +97,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f1f1ec',
         padding: 20,
+        borderColor: "#cbcbbe",
+        borderWidth: 2
     },
     title: {
         fontSize: 25,
@@ -99,11 +122,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 10,
     },
-    buttonRegistro: {
+    buttonText: {
         color: "#fff",
         fontSize: 16,
         fontWeight: "bold",
     },
+    registerText: {
+        marginTop: 20,
+        textAlign: "center",
+        fontSize: 14,
+        color: "#266150",
+        fontWeight: "bold",
+        textDecorationLine: "underline",
+    }
 });
 
 export default LoginScreen;

@@ -2,9 +2,19 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.removeItem("userId");
+            await AsyncStorage.removeItem("userType");
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
+    };
+
 
 
 //Fuentes Personalizadas
@@ -76,6 +86,11 @@ const HomeScreen = () => {
                         Barbería Elite: Fresno CA
                     </Text>
                 </TouchableOpacity>
+                
+                <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
+                    <Text style={styles.Opciones}>Cerrar sesión</Text>
+                </TouchableOpacity>
+
             </View>
         </ScrollView>
     );
