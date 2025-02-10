@@ -18,9 +18,9 @@ import RegistroEmpresaScreen from "./screens/RegistroEmpresaScreen";
 import ReservarScreen from "./screens/ReservarScreen";
 import ServiciosScreen from "./screens/ServiciosScreen";
 import CitasEmpresaScreen from "./screens/CitasEmpresaScreen";
+import PerfilEmpresaScreen from "./screens/PerfilEmpresaScreen"
 
 const HomeStackNavigator = createNativeStackNavigator();
-const userId =1
 
 function MyStack() {
     return (
@@ -76,6 +76,20 @@ function PerfilStack() {
     );
 }
 
+const PerfilEmpresaStackNavigator = createNativeStackNavigator();
+
+function PerfilEmpresaStack() {
+    return (
+        <PerfilEmpresaStackNavigator.Navigator screenOptions={{ headerShown: false }}>
+            <PerfilEmpresaStackNavigator.Screen name="PerfilEmpresaScreen" component={PerfilEmpresaScreen} />
+            <PerfilEmpresaStackNavigator.Screen name="HomeScreen" component={HomeScreen} />
+            <PerfilEmpresaStackNavigator.Screen name="Registro" component={RegistroUserScreen} />
+            <PerfilEmpresaStackNavigator.Screen name="LoginScreen" component={LoginScreen} />
+            <PerfilEmpresaStackNavigator.Screen name="RegistroEmpresa" component={RegistroEmpresaScreen} />
+        </PerfilEmpresaStackNavigator.Navigator>
+    );
+}
+
 const Tab = createBottomTabNavigator();
 
 function Mytabs() {
@@ -122,6 +136,7 @@ function Mytabs() {
                 }}
             />
 
+            {userType !== "empresa" && (
             <Tab.Screen 
                 name="Perfil" 
                 component={PerfilStack}
@@ -133,6 +148,21 @@ function Mytabs() {
                     headerShown: false,
                 }}
             />
+            )}
+
+            {userType == "empresa" && (
+            <Tab.Screen 
+                name="PerfilEmpresaScreen" 
+                component={PerfilEmpresaStack}
+                options={{
+                    tabBarLabel: 'Perfil',
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome6 name="user-large" size={24} color="#266150" />
+                    ),
+                    headerShown: false,
+                }}
+            />
+            )}
 
             {userType == "usuario" && (
             <Tab.Screen 

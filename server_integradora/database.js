@@ -157,12 +157,16 @@ return rows;
 }
 
 export async function obtenerCitasEmpresa(empresa_id) {
-  const [rows] = await pool.query(
-    'CALL ObtenerCitasEmpresa(?)',
-    [empresa_id]
-);
-return rows;
+  const [rows] = await pool.query('CALL ObtenerCitasEmpresa(?)', [empresa_id]);
+  if (rows[0] && Array.isArray(rows[0])) {
+      rows[0] = rows[0].map(cita => ({
+          ...cita,
+          fecha: cita.fecha ? cita.fecha.toISOString().split('T')[0] : null
+      }));
+  }
+  return rows;
 }
+
 
 export async function obtenerCitasUsuario(usuario_id) {
   const [rows] = await pool.query(

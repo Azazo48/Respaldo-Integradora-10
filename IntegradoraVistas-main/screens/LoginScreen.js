@@ -34,12 +34,20 @@ const LoginScreen = () => {
             //const response = await fetch(url, { method: 'GET' });
             //const data = await response.json();
             if (data && data[0] && data[0][0] && data[0][0].id) {
-                await AsyncStorage.setItem("userId", data[0][0].id.toString());
                 await AsyncStorage.setItem("userType", data[0][0].tipo.toString());
+                const tipo = data[0][0].tipo
+                if (tipo == "usuario") {
+                    await AsyncStorage.setItem("userId", data[0][0].id.toString());
+                    console.log("user id", data[0][0].id.toString())
+                }
+                if (tipo == "empresa") {
+                    await AsyncStorage.setItem("empresaId", data[0][0].id.toString());
+                    console.log("Empresa id", data[0][0].id.toString())
+                }
                 const userType = await AsyncStorage.getItem("userType");
-                console.log(data[0][0])
-                console.log(data[0][0].tipo)
-                console.log(data)
+                //console.log(data[0][0].id)
+                //console.log(data[0][0].tipo)
+                //console.log(data)
                 if(userType == "empresa"){
                     navigation.navigate("HomeScreen");
                 }

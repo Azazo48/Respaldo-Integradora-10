@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CitasEmpresaScreen = () => {
-  const [empresaCitas, setEmpresaCitas] = useState([
-    {
+  const [empresaCitas, setEmpresaCitas] = useState([])
+
+    /*{
       id: 1,
       servicio: "Corte de Cabello",
       fecha: "27 de enero de 2025",
@@ -22,7 +24,47 @@ const CitasEmpresaScreen = () => {
       cliente: "Lucía Gómez",
       contacto: "lucia.gomez@example.com",
     },
-  ]);
+  ]);*/    
+  
+  const [empresaId, setempresaId] = useState('');
+    useEffect(() => {
+      const loadempresaId = async () => {
+        try {
+          const storedempresaId = await AsyncStorage.getItem("empresaId");
+          if (storedempresaId) {
+            setempresaId(storedempresaId);
+          }
+          } catch (error) {
+            console.error("Error obteniendo empresaId", error);
+        }
+      };
+      loadempresaId();
+      const intervalo = setInterval(loadempresaId, 3000);
+      return () => clearInterval(intervalo);
+  }, []);
+
+  useEffect(() => {
+    if (empresaId) {
+      const fetchInfoCitasEmpresa = async () => {
+        try {
+          const response = await fetch(`https://solobackendintegradora.onrender.com/citas/empresa/${empresaId}`);
+          const data = await response.json();
+          //console.log("Citas recibidas:", data);
+          if (Array.isArray(data) && Array.isArray(data[0])) {
+            setEmpresaCitas(data[0]);
+          } else {
+            console.error("La estructura de la respuesta no es la esperada.");
+          }
+        } catch (error) {
+          console.error("Error al obtener la información del usuario:", error);
+        }
+      };
+      fetchInfoCitasEmpresa();
+      const intervalo = setInterval(fetchInfoCitasEmpresa, 3000);
+      return () => clearInterval(intervalo);
+    }
+  }, [empresaId]);
+
 
   const cancelarCita = (id) => {
     Alert.alert(
@@ -51,8 +93,8 @@ const CitasEmpresaScreen = () => {
         citas.map((cita) => (
           <View key={cita.id} style={styles.card}>
             <Text style={styles.serviceTitle}>{cita.servicio}</Text>
-            <Text style={styles.serviceDetails}>Cliente: {cita.cliente}</Text>
-            <Text style={styles.serviceDetails}>Contacto: {cita.contacto}</Text>
+            <Text style={styles.serviceDetails}>Cliente: {cita.usuario}</Text>
+            <Text style={styles.serviceDetails}>Contacto: {cita.u_correo}</Text>
             <Text style={styles.serviceDetails}>Fecha: {cita.fecha}</Text>
             <Text style={styles.serviceDetails}>Hora: {cita.hora}</Text>
             <Text style={styles.serviceDetails}>Precio: {cita.precio}</Text>

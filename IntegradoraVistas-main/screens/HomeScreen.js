@@ -10,6 +10,7 @@ const HomeScreen = () => {
         try {
             await AsyncStorage.removeItem("userId");
             await AsyncStorage.removeItem("userType");
+            await AsyncStorage.removeItem("empresaId");
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
