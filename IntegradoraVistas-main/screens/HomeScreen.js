@@ -6,15 +6,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
-    const handleLogout = async () => {
-        try {
+    /*const handleLogout = async () => {
+        try { 
             await AsyncStorage.removeItem("userId");
             await AsyncStorage.removeItem("userType");
             await AsyncStorage.removeItem("empresaId");
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
-    };
+    };*/
 
 
 
@@ -86,10 +86,6 @@ const HomeScreen = () => {
                     <Text style={styles.cardText}>
                         Barbería Elite: Fresno CA
                     </Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
-                    <Text style={styles.Opciones}>Cerrar sesión</Text>
                 </TouchableOpacity>
 
             </View>
