@@ -99,6 +99,11 @@ const RegistroUserScreen = () => {
             <TouchableOpacity style={styles.button} onPress={crearnuevousuario}>
                 <Text style={styles.buttonRegistro}>Registrarse</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("RegistroEmpresa")}>
+                <Text style={styles.registerText}>
+                    ¿Eres una empresa? ¡Regístrate con nosotros!
+                </Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -109,7 +114,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f1ec',
         padding: 20,
         borderColor: "#cbcbbe",
-        borderWidth: 2
+        borderWidth: 2,
+
     },
     title: {
         fontSize: 25,
@@ -138,6 +144,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
+    registerText: {
+        marginTop: 20,
+        textAlign: "center",
+        fontSize: 14,
+        color: "#266150",
+        fontWeight: "bold",
+        textDecorationLine: "underline",
+    }
 });
 
 export default RegistroUserScreen;

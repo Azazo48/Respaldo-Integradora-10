@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const servicios = [
     { id: "1", categoria: "Cortes de Cabello", servicio: "Corte en capas" },
@@ -16,6 +17,31 @@ const servicios = [
 ];
 
 const ServiciosScreen = () => {
+
+    const [ServiciosEmpresa, setServiciosEmpresa] = useState([]);
+
+    useEffect(() => {
+        const fetchInfoEmpresa = async () => {
+            try {
+                const storedempresaId = await AsyncStorage.getItem("empresaId");
+                if(storedempresaId){
+                const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/empresa/${storedempresaId}`);
+                const data = await response.json();
+                if (data && data[0] && data[0]) {
+                    setServiciosEmpresa(data[0]);
+                    console.log(data[0])
+                } else {
+                    console.error("Problema con la información de los servicios");
+                }
+            }
+            } catch (error) {
+                console.error("Error al obtener la información de los servicios", error);                    }
+            };
+            fetchInfoEmpresa();
+            const intervalo = setInterval(fetchInfoEmpresa, 20000);
+            return () => clearInterval(intervalo);
+    }, []);
+
     const navigation = useNavigation();
     const [fontsLoaded] = useFonts({
         Playfair: require('../assets/PlayfairDisplay-VariableFont_wght.ttf'),

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useFonts } from "expo-font";
+import { useNavigation } from "@react-navigation/native";
+import Navigation from "../Navigation";
 
 
 const RegistroEmpresaScreen = () => {
@@ -11,6 +13,7 @@ const RegistroEmpresaScreen = () => {
     const [telefono, setTelefono] = useState('');
     const [correoAdmin, setCorreoAdmin] = useState('');
     const [contrasena, setContrasena] = useState('');
+    const navigation = useNavigation();
 
     const crearNuevaEmpresa = async () => {
         if (!nombre.trim()) {
@@ -41,7 +44,6 @@ const RegistroEmpresaScreen = () => {
             Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
             return;
         }
-        Alert.alert("Éxito", "Registro empresarial exitoso");
         try {
             const response = await fetch('https://solobackendintegradora.onrender.com/empresas', {
                 method: 'POST',
@@ -62,7 +64,7 @@ const RegistroEmpresaScreen = () => {
             Alert.alert("Te has Registrado!");
             navigation.navigate("LoginScreen");
         } catch (error) {
-            console.error("Error al crear usuario", error);
+            console.error("Error al crear empresa", error);
         }
     };
 

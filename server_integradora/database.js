@@ -10,6 +10,45 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 }).promise();
 
+
+export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
+  const [rows] = await pool.query(
+    'CALL ModificarEstadoEmpresa(?, ?)',
+    [empresaid, nuevoestado]
+);
+return rows;
+}
+
+export async function ModificarSuscripcion(empresaid, nuevoestado) {
+  const [rows] = await pool.query(
+    'CALL ModificarAdmicion(?, ?)',
+    [empresaid, nuevoestado]
+);
+return rows;
+}
+
+export async function ModificarAdmicion(empresaid, nuevoestado) {
+  const [rows] = await pool.query(
+    'CALL ModificarSuscripcion(?, ?)',
+    [empresaid, nuevoestado]
+);
+return rows;
+}
+
+export async function ObtenerEmpresasActivas() {
+  const [rows] = await pool.query(
+    'CALL ObtenerEmpresasActivas()'
+);
+return rows;
+}
+
+export async function obtenerEmpresasNoAdmitidas() {
+  const [rows] = await pool.query(
+    'CALL ObtenerEmpresasNoAdmitidas()'
+);
+return rows;
+}
+
 // Procedimientos para Empresas
 export async function agregarEmpresa(nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen) {
   const [rows] = await pool.query(

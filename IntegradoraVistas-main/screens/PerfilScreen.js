@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 20,
         marginTop: 40,
+
     },
     userName: {
         fontSize: 22,

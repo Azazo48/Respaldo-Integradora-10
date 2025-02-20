@@ -21,7 +21,12 @@ import {
     obtenerCitasUsuario,
     obtenerCitaUnica,
     cancelarCita,
-    Login
+    Login,
+    obtenerEmpresasNoAdmitidas,
+    ObtenerEmpresasActivas,
+    ModificarAdmicion,
+    ModificarSuscripcion,
+    ModificarEstadoEmpresa
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -29,6 +34,75 @@ import cors from "cors";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+
+
+//-----------------------------------------------------------------------------------14/02/2025
+
+
+
+app.post("/modificarestadoemp", async (req, res) => {
+    const { empresaid, nuevoestado } = req.body;
+    console.log(empresaid, nuevoestado);
+    
+    try {
+        const mod = await ModificarEstadoEmpresa(empresaid, nuevoestado);
+        res.status(200).json(mod);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al modificar la empresa" });
+    }
+});
+
+app.post("/modificarsus", async (req, res) => {
+    const { empresaid, nuevoestado } = req.body;
+    console.log(empresaid, nuevoestado);
+    
+    try {
+        const mod = await ModificarSuscripcion(empresaid, nuevoestado);
+        res.status(200).json(mod);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al modificar la empresa" });
+    }
+});
+
+app.post("/modificaradm", async (req, res) => {
+    const { empresaid, nuevoestado } = req.body;
+    console.log(empresaid, nuevoestado);
+    
+    try {
+        const mod = await ModificarAdmicion(empresaid, nuevoestado);
+        res.status(200).json(mod);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al modificar la empresa" });
+    }
+});
+
+app.get("/empresasactivadas", async (req, res) => {
+    try {
+        const empresas = await ObtenerEmpresasActivas();
+        res.status(200).json(empresas);
+    } catch (error) {
+        res.status(500).json({ error: "No se pudieron obtener las empresas act" });
+    }
+});
+
+app.get("/empresasnoadm", async (req, res) => {
+    try {
+        const empresas = await obtenerEmpresasNoAdmitidas();
+        res.status(200).json(empresas);
+    } catch (error) {
+        res.status(500).json({ error: "No se pudieron obtener las empresas adm" });
+    }
+});
+
+
+
+//-----------------------------------------------------------------------------------14/02/2025
+
+
 
 app.post("/usuariosc", async (req, res) => {
     console.log(req.body);
@@ -227,7 +301,7 @@ app.post("/citas", async (req, res) => {
     const { empresa, usuario, servicio, fecha, hora } = req.body;
 
     try {
-        await crearCita({ empresa, usuario, servicio, fecha, hora });
+        await crearCita( empresa, usuario, servicio, fecha, hora );
         res.status(201).json({ message: "Cita creada exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo crear la cita." });

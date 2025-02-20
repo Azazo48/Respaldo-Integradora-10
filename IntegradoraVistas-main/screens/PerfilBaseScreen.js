@@ -4,60 +4,59 @@ import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-const PerfilEmpresaScreen = () => {
-    const [InfoEmpresa, setInfoEmpresa] = useState({});
+const PerfilBaseScreen = () => {
+    const [InfoUsuario, setInfoUsuario] = useState({});
     const navigation = useNavigation();
-    const [empresaId, setempresaId] = useState('');
+    const [userId, setUserId] = useState('');
 
     useEffect(() => {
-        const loadempresaId = async () => {
+        const loadUserId = async () => {
             try {
-                const storedempresaId = await AsyncStorage.getItem("empresaId");
-                if (storedempresaId ) {
-                    setempresaId(storedempresaId);
+                const storedUserId = await AsyncStorage.getItem("userId");
+                if (storedUserId) {
+                    setUserId(storedUserId);
                 }
             } catch (error) {
-                console.error("Error obteniendo empresaId", error);
+                console.error("Error obteniendo userId", error);
             }
         };
 
-        loadempresaId();
-        const intervalo = setInterval(loadempresaId, 3000);
+        loadUserId();
+        const intervalo = setInterval(loadUserId, 3000);
 
         return () => clearInterval(intervalo);
     }, []);
 
     useEffect(() => {
-        if (empresaId) {
-            const fetchInfoEmpresa = async () => {
+        if (userId) {
+            const fetchInfoUsuario = async () => {
                 try {
-                    const response = await fetch(`https://solobackendintegradora.onrender.com/empresas/${empresaId}`);
+                    const response = await fetch(`https://solobackendintegradora.onrender.com/usuarios/${userId}`);
                     const data = await response.json();
                     if (data && data[0] && data[0][0]) {
-                        setInfoEmpresa(data[0][0]);
+                        setInfoUsuario(data[0][0]);
                     } else {
-                        console.error("Problema con la información de la empresa");
+                        console.error("Problema con la información del usuario");
                     }
                 } catch (error) {
-                    console.error("Error al obtener la información de la empresa", error);
+                    console.error("Error al obtener la información del usuario:", error);
                 }
             };
 
-            fetchInfoEmpresa();
-            const intervalo = setInterval(fetchInfoEmpresa, 3000);
+            fetchInfoUsuario();
+            const intervalo = setInterval(fetchInfoUsuario, 3000);
 
             return () => clearInterval(intervalo);
         }
-    }, [empresaId]);
+    }, [userId]);
 
     const handleLogout = async () => {
         try {
-            await AsyncStorage.removeItem("empresaId");
+            await AsyncStorage.removeItem("userId");
             await AsyncStorage.removeItem("userType");
-            setInfoEmpresa({});
-            setempresaId('');
-            navigation.navigate("HomeScreen");
+            setInfoUsuario({});
+            setUserId('');
+            navigation.navigate("PerfilScreen");
         } catch (error) {
             console.error("Error al cerrar sesión:", error);
         }
@@ -72,30 +71,30 @@ const PerfilEmpresaScreen = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.userName}>
-                    {empresaId ? `${InfoEmpresa.nombre}` : "Inicia sesion o registrate con nosotros"}
+                    {userId ? `${InfoUsuario.nombre} ${InfoUsuario.apellidos}` : "Inicia sesion o registrate con nosotros"}
                 </Text>
             </View>
-            {empresaId && (
+            {userId && (
             <View style={styles.infoContainer}>
                 <Text style={styles.infoText}>
                     <Text style={styles.label}>Nombre: </Text>
-                    {InfoEmpresa.nombre}
+                    {InfoUsuario.nombre}
                 </Text>
                 <Text style={styles.infoText}>
-                    <Text style={styles.label}>Direccion: </Text>
-                    {InfoEmpresa.direccion}
+                    <Text style={styles.label}>Apellidos: </Text>
+                    {InfoUsuario.apellidos}
                 </Text>
                 <Text style={styles.infoText}>
-                    <Text style={styles.label}>Correo: </Text>
-                    {InfoEmpresa.correo}
+                    <Text style={styles.label}>Número de teléfono móvil: </Text>
+                    {InfoUsuario.telefono}
                 </Text>
                 <Text style={styles.infoText}>
-                    <Text style={styles.label}>Telefono: </Text>
-                    {InfoEmpresa.telefono}
+                    <Text style={styles.label}>Email: </Text>
+                    {InfoUsuario.correo}
                 </Text>
             </View>
             )}
-            {!empresaId && (
+            {!userId && (
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         onPress={() => navigation.navigate("Registro")}
@@ -113,7 +112,7 @@ const PerfilEmpresaScreen = () => {
                 </View>
             )}
 
-            {empresaId && (
+            {userId && (
                 <TouchableOpacity onPress={handleLogout} style={styles.menuItem}>
                     <Text style={styles.Opciones}>Cerrar sesión</Text>
                 </TouchableOpacity>
@@ -134,7 +133,8 @@ const styles = StyleSheet.create({
     header: {
         alignItems: "center",
         marginBottom: 20,
-        marginTop: 40,
+        marginTop: "65.02%",
+
     },
     userName: {
         fontSize: 22,
@@ -194,4 +194,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PerfilEmpresaScreen;
+export default PerfilBaseScreen;

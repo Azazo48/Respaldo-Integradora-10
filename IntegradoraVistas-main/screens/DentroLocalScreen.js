@@ -1,10 +1,15 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SalonScreen = () => {
+const SalonScreen = ({ route }) => {
     const navigation = useNavigation();
+    const [InfoEmpresa, setInfoEmpresa] = useState({});
+    const [ServiciosEmpresa, setServiciosEmpresa] = useState([]);
+    const { id } = route.params;
+    console.log(id)
 
     // Definir los servicios
     const servicios = [
@@ -22,10 +27,78 @@ const SalonScreen = () => {
         }
     ];
 
+        useEffect(() => {
+            if (id) {
+                const fetchInfoEmpresa = async () => {
+                    try {
+                        const response = await fetch(`https://solobackendintegradora.onrender.com/empresas/${id}`);
+                        const data = await response.json();
+                        if (data && data[0] && data[0][0]) {
+                            setInfoEmpresa(data[0][0]);
+                            console.log(data)
+                        } else {
+                            console.error("Problema con la información de la empresa");
+                        }
+                    } catch (error) {
+                        console.error("Error al obtener la información de la empresa", error);
+                    }
+                    try {
+                        const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/empresa/${id}`);
+                        const data2 = await response.json();
+                        if (data2 && data2[0] && data2[0]) {
+                            setServiciosEmpresa(data2[0]);
+                            console.log(data2[0])
+                        } else {
+                            console.error("Problema con la información de los servicios");
+                        }
+                    } catch (error) {
+                        console.error("Error al obtener la información de los servicios", error);
+                    }
+                };
+    
+                fetchInfoEmpresa();
+                const intervalo = setInterval(fetchInfoEmpresa, 20000);
+    
+                return () => clearInterval(intervalo);
+            }
+        }, []);
+
+        /*useEffect(() => {
+            if (id) {
+                const fetchServiciosEmpresa = async () => {
+                    try {
+                        const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/empresa/${id}`);
+                        const data2 = await response.json();
+                        if (data2 && data2[0] && data2[0][0]) {
+                            setServiciosEmpresa(data2[0][0]);
+                            console.log(data2)
+                        } else {
+                            console.error("Problema con la información de los servicios");
+                        }
+                    } catch (error) {
+                        console.error("Error al obtener la información de los servicios", error);
+                    }
+                };
+    
+                fetchServiciosEmpresa();
+                const intervalo = setInterval(fetchServiciosEmpresa, 20000);
+    
+                return () => clearInterval(intervalo);
+            }
+        }, []);*/
+
     const handleReservar = (servicio) => {
         // Navegar a la pantalla de reserva, pasando la información del servicio
-        navigation.navigate("Reserva", {
-            servicio: servicio,
+        AsyncStorage.getItem("userId").then((storedUserId) => {
+            console.log(storedUserId);
+            if(storedUserId){
+                navigation.navigate("Reserva", {
+                    servicio: servicio,
+                });
+            } else
+            {
+                Alert.alert("Ocupas registrarte para hacer citas")
+            }
         });
     };
 
@@ -35,8 +108,8 @@ const [fontsLoaded] = useFonts({
 });
     return (        
         <View style={styles.container}>
-            <Text style={styles.title}>Estética Beautificiencia</Text>
-            <Text style={styles.subtitle}>Anaheim CA</Text>
+            <Text style={styles.title}>{InfoEmpresa.nombre}</Text>
+            <Text style={styles.subtitle}>{InfoEmpresa.direccion}</Text>
 
             <Image
                 source={{
@@ -46,11 +119,11 @@ const [fontsLoaded] = useFonts({
             />
 
             <View style={styles.services}>
-                {servicios.map((servicio) => (
+                {ServiciosEmpresa.map((servicio) => (
                     <View key={servicio.id} style={styles.serviceCard}>
                         <View>
                             <Text style={styles.serviceTitle}>{servicio.nombre}</Text>
-                            <Text style={styles.serviceDuration}>{servicio.duracion}</Text>
+                            <Text style={styles.serviceDuration}>{servicio.descripcion}</Text>
                             <Text style={styles.servicePrice}>{servicio.precio}</Text>
                         </View>
                         <TouchableOpacity

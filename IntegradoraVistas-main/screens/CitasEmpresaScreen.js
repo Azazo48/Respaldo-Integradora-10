@@ -128,6 +128,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f1f1ec",
     padding: 20,
+    borderColor: "#cbcbbe",
+    borderWidth: 2
   },
   title: {
     fontSize: 24,

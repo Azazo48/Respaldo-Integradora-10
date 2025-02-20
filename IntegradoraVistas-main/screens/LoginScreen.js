@@ -94,7 +94,7 @@ const LoginScreen = () => {
                 <Text style={styles.registerText}>
                     ¿Eres una empresa? ¡Regístrate con nosotros!
                 </Text>
-</TouchableOpacity>
+            </TouchableOpacity>
 
         </View>
     );
