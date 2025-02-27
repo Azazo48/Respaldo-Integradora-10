@@ -19,7 +19,7 @@ export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
 return rows;
 }
 
-export async function ModificarSuscripcion(empresaid, nuevoestado) {
+export async function ModificarAdmicion(empresaid, nuevoestado) {
   const [rows] = await pool.query(
     'CALL ModificarAdmicion(?, ?)',
     [empresaid, nuevoestado]
@@ -27,7 +27,7 @@ export async function ModificarSuscripcion(empresaid, nuevoestado) {
 return rows;
 }
 
-export async function ModificarAdmicion(empresaid, nuevoestado) {
+export async function ModificarSuscripcion(empresaid, nuevoestado) {
   const [rows] = await pool.query(
     'CALL ModificarSuscripcion(?, ?)',
     [empresaid, nuevoestado]
@@ -91,10 +91,10 @@ return rows;
 }
 
 // Procedimientos para Servicios
-export async function agregarServicio(empresa, nombre, descripcion, precio) {
+export async function agregarServicio(empresa, nombre, descripcion, precio, duracion) {
   const [rows] = await pool.query(
-    'CALL AgregarServicio(?, ?, ?, ?)',
-    [empresa, nombre, descripcion, precio]
+    'CALL AgregarServicio(?, ?, ?, ?, ?)',
+    [empresa, nombre, descripcion, precio, duracion]
 );
 return rows;
 }
@@ -122,10 +122,10 @@ export async function obtenerServicioEspecifico(servicio_id) {
 return rows;
 }
 
-export async function actualizarServicio(servicio_id, empresa, nombre, descripcion, precio) {
+export async function actualizarServicio(servicio_id, empresa, nombre, descripcion, precio, duracion) {
   const [rows] = await pool.query(
-    'CALL ActualizarServicio(?, ?, ?, ?, ?)',
-    [servicio_id, empresa, nombre, descripcion, precio]
+    'CALL ActualizarServicio(?, ?, ?, ?, ?, ?)',
+    [servicio_id, empresa, nombre, descripcion, precio, duracion]
 );
 return rows;
 }

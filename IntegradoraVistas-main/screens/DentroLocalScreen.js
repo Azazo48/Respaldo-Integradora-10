@@ -63,30 +63,6 @@ const SalonScreen = ({ route }) => {
             }
         }, []);
 
-        /*useEffect(() => {
-            if (id) {
-                const fetchServiciosEmpresa = async () => {
-                    try {
-                        const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/empresa/${id}`);
-                        const data2 = await response.json();
-                        if (data2 && data2[0] && data2[0][0]) {
-                            setServiciosEmpresa(data2[0][0]);
-                            console.log(data2)
-                        } else {
-                            console.error("Problema con la información de los servicios");
-                        }
-                    } catch (error) {
-                        console.error("Error al obtener la información de los servicios", error);
-                    }
-                };
-    
-                fetchServiciosEmpresa();
-                const intervalo = setInterval(fetchServiciosEmpresa, 20000);
-    
-                return () => clearInterval(intervalo);
-            }
-        }, []);*/
-
     const handleReservar = (servicio) => {
         // Navegar a la pantalla de reserva, pasando la información del servicio
         AsyncStorage.getItem("userId").then((storedUserId) => {

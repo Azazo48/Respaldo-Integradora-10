@@ -20,38 +20,6 @@ const HomeScreen = () => {
         );
     }
 
-    // Definir locales como un array
-    /*const locales = [
-        { 
-            id: '1',
-            nombre: "Estética Beautificiencia",
-            ubicacion: "Anaheim CA",
-            imagen: "https://i.pinimg.com/originals/6c/bd/ee/6cbdee4d0050fff77ef812ea51a2ce4c.jpg",
-            screen: "Local"
-        },
-        { 
-            id: '2',
-            nombre: "Salón Glamour",
-            ubicacion: "Los Angeles CA",
-            imagen: "https://www.esteticaimage.es/wp-content/uploads/2015/08/estetica-salon1.jpg",
-            screen: "LoginUsuarios"
-        },
-        { 
-            id: '3',
-            nombre: "Spa RelaxTime",
-            ubicacion: "San Diego CA",
-            imagen: "https://estudioniddo.com/wp-content/uploads/2019/01/img_destacada_17.jpg",
-            screen: "RegistroEmpresa"
-        },
-        { 
-            id: '4',
-            nombre: "Barbería Elite",
-            ubicacion: "Fresno CA",
-            imagen: "https://ledcst.com/wp-content/uploads/barber-shop-lights.webp",
-            screen: "Local"
-        },
-    ];*/
-    //----------------------------------------------------------------
     const [empresas, setEmpresas] = useState([]);
 
     useEffect(() => {
@@ -70,7 +38,7 @@ const HomeScreen = () => {
             }
         };
         fetchInfoEmpresas();
-        const intervalo = setInterval(fetchInfoEmpresas, 20000);
+        const intervalo = setInterval(fetchInfoEmpresas, 30000);
         return () => clearInterval(intervalo);
     },[]);
     
@@ -94,7 +62,7 @@ const HomeScreen = () => {
                         onPress={() => funcionbienfuncional(empresa.id)}
                         activeOpacity={0.7}
                     >
-                        <Image source={{ uri: empresa.imagen }} style={styles.cardImage} />
+                        <Image source={{ uri: "https://i.pinimg.com/originals/6c/bd/ee/6cbdee4d0050fff77ef812ea51a2ce4c.jpg" }} style={styles.cardImage} />
                         <View style={styles.cardInfo}>
                             <Text style={styles.cardTitle}>{empresa.nombre}</Text>
                             <Text style={styles.cardLocation}>{empresa.ubicacion}</Text>

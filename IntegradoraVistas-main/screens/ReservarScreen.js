@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 
 const ReservarScreen = ({ route }) => {
-    const { servicio } = route.params; // Recibir los datos del servicio
+    const navigation = useNavigation(); 
+    const { servicio } = route.params;
     console.log(servicio)
 
     const [selectedDate, setSelectedDate] = useState(null);
@@ -21,6 +23,18 @@ const ReservarScreen = ({ route }) => {
         "12:00",
         "12:30",
         "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
     ];
 
         useEffect(() => {
@@ -71,7 +85,7 @@ const ReservarScreen = ({ route }) => {
             Alert.alert( "Reserva Confirmada", `Tu cita está programada para el ${selectedDate} a las ${selectedTime}.` );
             navigation.navigate("HomeScreen");
         } catch (error) {
-            console.error("Error al crear usuario", error);
+            console.error("Error al crear la cita", error);
         }
         //Alert.alert( "Reserva Confirmada", `Tu cita está programada para el ${selectedDate} a las ${selectedTime}.` );
     };

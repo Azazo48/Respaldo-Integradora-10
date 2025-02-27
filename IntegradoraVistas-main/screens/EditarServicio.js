@@ -1,18 +1,43 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EditarServicio = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { servicio } = route.params;
 
+
   const [duracion, setDuracion] = useState(servicio.duracion);
   const [precio, setPrecio] = useState(servicio.precio);
+  const [idservicio, setId] = useState(servicio.id);
 
-  const handleSave = () => {
-    Alert.alert("Servicio actualizado", `Duración: ${duracion}\nPrecio: ${precio}`);
-    navigation.goBack();
+  const handleSave = async () => {
+      try {
+        const storedEmpresaId = await AsyncStorage.getItem("empresaId");
+        console.log("ES id P: ", idservicio)
+        const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/${idservicio}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            empresa: storedEmpresaId,
+            nombre: servicio.nombre,
+            descripcion: servicio.id,
+            precio: precio,
+            duracion: duracion
+            })
+          });
+            const result = await response.json();
+            console.log(result)
+            console.log("Actualizado")
+            Alert.alert("Servicio actualizado", `Duración: ${duracion}\nPrecio: ${precio}`);
+            navigation.goBack();
+            } catch (error) {
+              console.error("Error al crear usuario", error);
+            }
   };
 
   const handleDelete = () => {
@@ -25,11 +50,11 @@ const EditarServicio = () => {
           text: "Eliminar",
           style: "destructive",
           onPress: () => {
-            // Aquí implementarías la lógica para eliminar el servicio
+            // Aqui puedes meter la lagica para borrar el servicio Hassielito tontito
             Alert.alert("Servicio eliminado");
             navigation.goBack();
           },
-        },
+        },F
       ]
     );
   };

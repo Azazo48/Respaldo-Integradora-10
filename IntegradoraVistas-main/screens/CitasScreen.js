@@ -3,27 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from "rea
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/usuario/{userId}
-  const [userCitas, setUserCitas] = useState([]); /*= useState([
-    {
-      id: 1,
-      servicio: "Masaje Relajante",
-      fecha: "25 de enero de 2025",
-      hora: "10:00 a.m.",
-      precio: "$50.00",
-      local: "Estética Beautificiencia",
-      cliente: "Juan Pérez",
-    },
-    {
-      id: 2,
-      servicio: "Spa Pedicure",
-      fecha: "26 de enero de 2025",
-      hora: "2:00 p.m.",
-      precio: "$40.00",
-      local: "Estética Beautificiencia",
-      cliente: "Ana García",
-    },
-  ]);*/
+const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/usuario/{userId}   
+  const [userCitas, setUserCitas] = useState([]); 
+
     const [userId, setUserId] = useState('');
 
     useEffect(() => {
@@ -39,7 +21,7 @@ const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/u
         };
 
         loadUserId();
-        const intervalo = setInterval(loadUserId, 3000);
+        const intervalo = setInterval(loadUserId, 10000);
 
         return () => clearInterval(intervalo);
     }, []);
@@ -51,8 +33,7 @@ const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/u
             const response = await fetch(`https://solobackendintegradora.onrender.com/citas/usuario/${userId}`);
             const data = await response.json();
             //console.log("Citas recibidas:", data);
-            
-            if (Array.isArray(data) && Array.isArray(data[0])) {
+            if (data && data[0] && data[0]) {
               setUserCitas(data[0]);
             } else {
               console.error("La estructura de la respuesta no es la esperada.");
@@ -63,11 +44,12 @@ const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/u
         };
     
         fetchInfoUsuario();
-        const intervalo = setInterval(fetchInfoUsuario, 3000);
+        const intervalo = setInterval(fetchInfoUsuario, 10000);
     
         return () => clearInterval(intervalo);
       }
     }, [userId]);
+
     
     
     //Fuentes Personalizadas
@@ -76,23 +58,37 @@ const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/u
         Raleway: require('../assets/Raleway-VariableFont_wght.ttf'),
         });
     
-      const cancelarCita = (id, tipo) => {
-        Alert.alert(
-          "Cancelar Cita",
-          "¿Estás seguro de que deseas cancelar esta cita?",
-          [
-            { text: "No", style: "cancel" },
-            {
-              text: "Sí",
-              onPress: () => {
-                if (tipo === "user") {
-                  setUserCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
-                }
+  const cancelarCita = (id) => {
+    Alert.alert(
+      "Cancelar Cita",
+      "¿Estás seguro de que deseas cancelar esta cita?",
+      [
+      { text: "No", style: "cancel" },
+      {
+        text: "Sí",
+        onPress: async () => {
+          try {
+            const response = await fetch(`https://solobackendintegradora.onrender.com/citas/${id}/cancelar`, {
+              method: "PUT",
+              headers: {
+                'Content-Type': 'application/json',
               },
-            },
-          ]
-        );
-      };
+            });
+            const data = await response.text(); 
+            console.log("Respuesta del servidor:", data)
+            if (data) {
+              setUserCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
+            } else {
+              console.error("La estructura de la respuesta no es la esperada2.");
+            }
+          } catch (error) {
+            console.error("Error al cancelar la cita:", error);
+          }
+        },
+      },
+    ]
+  );
+  };
     
       const renderCitas = (citas) => (
         <ScrollView>

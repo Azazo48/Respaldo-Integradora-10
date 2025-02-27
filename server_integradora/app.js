@@ -197,10 +197,10 @@ app.delete("/empresas/:id", async (req, res) => {
 
 //Servicios --------------------------------------
 app.post("/servicios", async (req, res) => {
-    const { empresa, nombre, descripcion, precio } = req.body;
+    const { empresa, nombre, descripcion, precio, duracion } = req.body;
 
     try {
-        await agregarServicio({ empresa, nombre, descripcion, precio });
+        await agregarServicio( empresa, nombre, descripcion, precio, duracion );
         res.status(201).json({ message: "Servicio agregado exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo agregar el servicio." });
@@ -240,10 +240,13 @@ app.get("/servicios/:id", async (req, res) => {
 
 app.put("/servicios/:id", async (req, res) => {
     const { id } = req.params;
-    const { empresa, nombre, descripcion, precio } = req.body;
+    const { empresa, nombre, descripcion, precio, duracion } = req.body;
+
+    console.log("ID recibido:", id);
+    console.log("Datos recibidos:", req.body);
 
     try {
-        await actualizarServicio({ id: Number(id), empresa, nombre, descripcion, precio });
+        await actualizarServicio( Number(id), empresa, nombre, descripcion, precio, duracion );
         res.status(200).json({ message: "Servicio actualizado exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo actualizar el servicio." });

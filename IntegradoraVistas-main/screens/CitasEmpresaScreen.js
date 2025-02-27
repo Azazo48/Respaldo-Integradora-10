@@ -6,26 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const CitasEmpresaScreen = () => {
   const [empresaCitas, setEmpresaCitas] = useState([])
 
-    /*{
-      id: 1,
-      servicio: "Corte de Cabello",
-      fecha: "27 de enero de 2025",
-      hora: "11:00 a.m.",
-      precio: "$25.00",
-      cliente: "Carlos Martínez",
-      contacto: "carlosmartinez@gmail.com",
-    },
-    {
-      id: 2,
-      servicio: "Manicure Deluxe",
-      fecha: "28 de enero de 2025",
-      hora: "3:00 p.m.",
-      precio: "$30.00",
-      cliente: "Lucía Gómez",
-      contacto: "lucia.gomez@example.com",
-    },
-  ]);*/    
-  
   const [empresaId, setempresaId] = useState('');
     useEffect(() => {
       const loadempresaId = async () => {
@@ -50,10 +30,10 @@ const CitasEmpresaScreen = () => {
           const response = await fetch(`https://solobackendintegradora.onrender.com/citas/empresa/${empresaId}`);
           const data = await response.json();
           //console.log("Citas recibidas:", data);
-          if (Array.isArray(data) && Array.isArray(data[0])) {
+          if (data && data[0] && data[0]) {
             setEmpresaCitas(data[0]);
           } else {
-            console.error("La estructura de la respuesta no es la esperada.");
+            console.error("La estructura de la respuesta no es la esperada1.");
           }
         } catch (error) {
           console.error("Error al obtener la información del usuario:", error);
@@ -71,15 +51,31 @@ const CitasEmpresaScreen = () => {
       "Cancelar Cita",
       "¿Estás seguro de que deseas cancelar esta cita?",
       [
-        { text: "No", style: "cancel" },
-        {
-          text: "Sí",
-          onPress: () => {
-            setEmpresaCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
-          },
+      { text: "No", style: "cancel" },
+      {
+        text: "Sí",
+        onPress: async () => {
+          try {
+            const response = await fetch(`https://solobackendintegradora.onrender.com/citas/${id}/cancelar`, {
+              method: "PUT",
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            const data = await response.text(); 
+            console.log("Respuesta del servidor:", data)
+            if (data) {
+              setEmpresaCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
+            } else {
+              console.error("La estructura de la respuesta no es la esperada2.");
+            }
+          } catch (error) {
+            console.error("Error al cancelar la cita:", error);
+          }
         },
-      ]
-    );
+      },
+    ]
+  );
   };
 
   const [fontsLoaded] = useFonts({
