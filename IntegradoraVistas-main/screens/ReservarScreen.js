@@ -66,7 +66,6 @@ const ReservarScreen = ({ route }) => {
         console.log("empresa", servicio.empresa)
         console.log("fecha", selectedDate)
         console.log("hora", selectedTime)
-        alert("Uno")
         try {
             const response = await fetch('https://solobackendintegradora.onrender.com/citas', {
                 method: 'POST',

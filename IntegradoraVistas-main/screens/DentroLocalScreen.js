@@ -11,22 +11,6 @@ const SalonScreen = ({ route }) => {
     const { id } = route.params;
     console.log(id)
 
-    // Definir los servicios
-    const servicios = [
-        {
-            id: '1',
-            nombre: 'Spa Pedicure',
-            duracion: '1 Hora',
-            precio: 'Desde 40 DLS',
-        },
-        {
-            id: '2',
-            nombre: 'Acrylic Nails',
-            duracion: '1 Hora',
-            precio: 'Desde 60 DLS',
-        }
-    ];
-
         useEffect(() => {
             if (id) {
                 const fetchInfoEmpresa = async () => {
@@ -99,7 +83,7 @@ const [fontsLoaded] = useFonts({
                     <View key={servicio.id} style={styles.serviceCard}>
                         <View>
                             <Text style={styles.serviceTitle}>{servicio.nombre}</Text>
-                            <Text style={styles.serviceDuration}>{servicio.descripcion}</Text>
+                            <Text style={styles.serviceDuration}>{servicio.duracion}</Text>
                             <Text style={styles.servicePrice}>{servicio.precio}</Text>
                         </View>
                         <TouchableOpacity
