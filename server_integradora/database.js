@@ -106,6 +106,13 @@ export async function obtenerServicios() {
 return rows;
 }
 
+export async function ObtenerEmpresasSuscripciones() {
+  const [rows] = await pool.query(
+    'CALL ObtenerEmpresasSuscripciones()'
+);
+return rows;
+}
+
 export async function obtenerServiciosEmpresa(empresa_id) {
   const [rows] = await pool.query(
     'CALL ObtenerServiciosEmpresa(?)',
@@ -142,6 +149,14 @@ return rows;
 export async function Login(correo, contrasena) {
   const [rows] = await pool.query(
     'call Login(?,?)',
+    [correo, contrasena]
+);
+return rows;
+}
+
+export async function Logins(correo, contrasena) {
+  const [rows] = await pool.query(
+    'call LoginUsuario(?,?)',
     [correo, contrasena]
 );
 return rows;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -28,13 +27,13 @@ const HomeScreen = () => {
             const response = await fetch(`https://solobackendintegradora.onrender.com/empresas`);
             const data = await response.json();
             console.log("Empresas Recibidas", data);
-            if (Array.isArray(data) && Array.isArray(data[0])) {
+            if (data && data[0]) {
                 setEmpresas(data[0]);
             } else {
                 console.error("La estructura de la respuesta no es la esperada.");
             }
             } catch (error) {
-            console.error("Error al obtener la información del usuario:", error);
+                console.error("Error al obtener la información del usuario:", error);
             }
         };
         fetchInfoEmpresas();

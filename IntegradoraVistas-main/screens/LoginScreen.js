@@ -30,9 +30,6 @@ const LoginScreen = () => {
                 })
             });
             const data = await response.json();
-            //const url = `https://solobackendintegradora.onrender.com/login?correo=${encodeURIComponent(correo)}&contrasena=${encodeURIComponent(contrasena)}`;
-            //const response = await fetch(url, { method: 'GET' });
-            //const data = await response.json();
             if (data && data[0] && data[0][0] && data[0][0].id) {
                 await AsyncStorage.setItem("userType", data[0][0].tipo.toString());
                 const tipo = data[0][0].tipo
