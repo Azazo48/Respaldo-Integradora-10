@@ -40,7 +40,7 @@ const EditarServicio = () => {
             }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     Alert.alert(
       "Eliminar servicio",
       "¿Estás seguro de que deseas eliminar este servicio?",
@@ -49,12 +49,19 @@ const EditarServicio = () => {
         {
           text: "Eliminar",
           style: "destructive",
-          onPress: () => {
-            // Aqui puedes meter la lagica para borrar el servicio Hassielito tontito
+          onPress: async () => {
+            try {
+              const response = await fetch(`https://solobackendintegradora.onrender.com/empresas/${empresaId}`)
+              const result = await response.json();
+              console.log(result)
+              console.log("Eliminado")
+              } catch (error) {
+                console.error("Error al crear el servicio", error);
+              }
             Alert.alert("Servicio eliminado");
             navigation.goBack();
           },
-        },F
+        },
       ]
     );
   };

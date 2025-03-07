@@ -129,9 +129,40 @@ const selectImage = async () => {
     setNuevoServicio({ nombre: "", duracion: "", precio: "" });
   };
 
+//-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
+
+/*
+  const eliminarServicio = async () => {
+    if (!nuevoServicio.nombre || !nuevoServicio.duracion || !nuevoServicio.precio) {
+      alert("Por favor, completa todos los campos.");// nuevo servicio contiene la info del nuevo servicio y nuevo no se que hace
+      return;
+      }
+      try {
+            const response = await fetch(`https://solobackendintegradora.onrender.com/empresas/${empresaId}`)
+            const result = await response.json();
+            console.log(result)
+            console.log("Eliminado")
+            } catch (error) {
+              console.error("Error al crear el servicio", error);
+            }
+
+    setServiciosEmpresa([...ServiciosEmpresa, nuevoServicio]);
+    setNuevoServicio({ nombre: "", duracion: "", precio: "" });
+  };*/
+
   const handleEditar = (servicio) => {
     navigation.navigate("EditarServicio", { servicio });
   };
+
+  //-------------------------------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------------------------------------
+
+
+
+  ///servicios/:id
 
   const [fontsLoaded] = useFonts({
     Playfair: require("../assets/PlayfairDisplay-VariableFont_wght.ttf"),
@@ -288,6 +319,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   editButton: {
+    backgroundColor: "#FFA500",
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  elimnarButton: {
     backgroundColor: "#FFA500",
     borderRadius: 5,
     paddingVertical: 10,

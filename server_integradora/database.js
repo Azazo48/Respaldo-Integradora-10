@@ -57,6 +57,13 @@ export async function ObtenerEmpresasActivas() {
 return rows;
 }
 
+export async function obtenerEmpresasNoAdmitidas() {
+  const [rows] = await pool.query(
+    'CALL obtenerEmpresasRechazadas()'
+);
+return rows;
+}
+
 export async function obtenerEmpresasRechazadas() {
   const [rows] = await pool.query(
     'CALL obtenerEmpresasRechazadas()'
