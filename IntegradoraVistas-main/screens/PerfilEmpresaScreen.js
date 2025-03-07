@@ -14,11 +14,12 @@ const PerfilEmpresaScreen = () => {
         const loadempresaId = async () => {
             try {
                 const storedempresaId = await AsyncStorage.getItem("empresaId");
+                console.log(storedempresaId)
                 if (storedempresaId ) {
                     setempresaId(storedempresaId);
                 }
             } catch (error) {
-                console.error("Error obteniendo empresaId", error);
+                console.error("Error obteniendo empresaId");
             }
         };
 

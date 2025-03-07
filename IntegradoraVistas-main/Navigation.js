@@ -81,7 +81,7 @@ const PerfilBaseStackNavigator = createNativeStackNavigator();
 function PerfilBaseStack() {
     return (
         <PerfilBaseStackNavigator.Navigator screenOptions={{ headerShown: false }}>
-            <PerfilBaseStackNavigator.Screen name="PerfilEmpresaScreen" component={PerfilBaseScreen} />
+            <PerfilBaseStackNavigator.Screen name="PerfilBase" component={PerfilBaseScreen} />
             <PerfilBaseStackNavigator.Screen name="HomeScreen" component={HomeScreen} />
             <PerfilBaseStackNavigator.Screen name="Registro" component={RegistroUserScreen} />
             <PerfilBaseStackNavigator.Screen name="LoginScreen" component={LoginScreen} />

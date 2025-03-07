@@ -177,6 +177,14 @@ app.get("/empresasnoadm", async (req, res) => {
     }
 });
 
+app.get("/empresasrechazadas", async (req, res) => {
+    try {
+        const empresas = await obtenerEmpresasRechazadas();
+        res.status(200).json(empresas);
+    } catch (error) {
+        res.status(500).json({ error: "No se pudieron obtener las empresas adm" });
+    }
+});
 
 
 //-----------------------------------------------------------------------------------14/02/2025
