@@ -33,12 +33,77 @@ import {
 import bodyParser from "body-parser";
 import cors from "cors";
 
-const bcrypt = require("bcrypt");
+import bcrypt from "bcryptjs";
+
+
+
 const saltRounds = 10;
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+app.post("/login", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
+
+    try {
+        const rows = await Login(correo);
+        const usuario = rows[0][0];
+
+        if (!usuario || !usuario.id) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Comparar la contraseña encriptada con bcrypt
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
+    } catch (error) {
+        console.error("Error en login:", error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
+
+
+app.post("/logins", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
+    try {
+        const [rows] = await Logins(correo);
+        console.log("Rows obtenidos:", rows);
+        if (!rows || rows.length === 0) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+        const usuario = rows[0];
+        console.log("Usuario encontrado:", usuario);
+        if (!usuario || !usuario.contrasena) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        res.status(200).json({ id: usuario.id, tipo: usuario.permiso });
+    } catch (error) {
+        console.error("Error en login:", error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
+
+
+
+
+
+
 
 
 
@@ -119,17 +184,29 @@ app.get("/empresasnoadm", async (req, res) => {
 
 
 app.post("/usuariosc", async (req, res) => {
-    console.log(req.body);
     const { nombre, apellido, correo, contrasena, telefono } = req.body;
+    console.log(req.body);
+
+    // Validamos que los campos no estén vacíos
+    if (!nombre || !apellido || !correo || !contrasena || !telefono) {
+        return res.status(400).json({ error: "Todos los campos son obligatorios." });
+    }
+
     try {
+        // Hasheamos la contraseña
         const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
+        // Llamamos a la función para crear el usuario en la base de datos
         await crearUsuario(nombre, apellido, correo, hashedPassword, telefono);
+
         res.status(201).json({ message: "Usuario creado exitosamente." });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "No se pudo crear el usuario." });
     }
 });
+
+
 
 app.get("/usuarios/:id", async (req, res) => {
     const { id } = req.params;
@@ -142,35 +219,6 @@ app.get("/usuarios/:id", async (req, res) => {
 });
 
 
-app.post("/login", async (req, res) => {
-    const { correo, contrasena } = req.body;
-    console.log(correo, contrasena);
-    try {
-        const usuario = await Login(correo);
-        if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
-            return res.status(401).json({ error: "Error al intentar logearte" });
-        }
-        res.status(200).json(usuario);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error al intentar logearte" });
-    }
-});
-
-app.post("/logins", async (req, res) => {
-    const { correo, contrasena } = req.body;
-    console.log(correo, contrasena);
-    try {
-        const usuario = await Logins(correo);
-        if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
-            return res.status(401).json({ error: "Error al intentar logearte" });
-        }
-        res.status(200).json(usuario);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error al intentar logearte" });
-    }
-});
 
 
 

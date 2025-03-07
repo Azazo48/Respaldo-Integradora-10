@@ -10,6 +10,21 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 }).promise();
 
+export async function Login(correo) {
+  const [rows] = await pool.query(
+      'CALL Login(?)',
+      [correo]
+  );
+  return rows;
+}
+
+
+export async function Logins(correo) {
+  const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
+  console.log("Resultado de la consulta:", rows);
+  return rows;
+}
+
 
 export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
   const [rows] = await pool.query(
@@ -146,29 +161,18 @@ return rows;
 }
 
 // Procedimientos para Usuarios//////////////////////////////////////////////////////////////////////////////////////////////
-export async function Login(correo, contrasena) {
-  const [rows] = await pool.query(
-    'call Login(?,?)',
-    [correo, contrasena]
-);
-return rows;
-}
 
-export async function Logins(correo, contrasena) {
-  const [rows] = await pool.query(
-    'call LoginUsuario(?,?)',
-    [correo, contrasena]
-);
-return rows;
-}
+
+
 
 export async function crearUsuario(nombre, apellido, correo, contrasena, telefono) {
   const [rows] = await pool.query(
     'CALL CrearUsuario(?,?,?,?,?)',
     [nombre, apellido, correo, contrasena, telefono]
-);
-return rows;
+  );
+  return rows; // Devolvemos las filas que devuelve el procedimiento almacenado
 }
+
 
 export async function obtenerUsuarios() {
   const [rows] = await pool.query(

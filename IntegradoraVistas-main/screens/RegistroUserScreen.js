@@ -12,28 +12,36 @@ const RegistroUserScreen = () => {
     const [telefono, setTelefono] = useState('');
 
     const crearnuevousuario = async () => {
+        // Validaciones de campos
         if (!nombre.trim()) {
             Alert.alert("Error", "El nombre es obligatorio");
+            console.log("1")
             return;
         }
         if (!apellido.trim()) {
             Alert.alert("Error", "Los apellidos son obligatorios");
+            console.log("1")
             return;
         }
         if (!correo.includes('@')) {
             Alert.alert("Error", "El correo debe ser válido");
+            //console.log("1")
             return;
         }
         if (contrasena.length < 6) {
             Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
+            //console.log("1")
             return;
         }
         if (!telefono.trim() || telefono.length < 10) {
             Alert.alert("Error", "El número de teléfono debe tener al menos 10 dígitos");
+            //console.log("1")
             return;
         }
-
+    
         try {
+            // Hacemos el POST al backend para crear el usuario
+            //console.log("2")
             const response = await fetch('https://solobackendintegradora.onrender.com/usuariosc', {
                 method: 'POST',
                 headers: {
@@ -47,13 +55,25 @@ const RegistroUserScreen = () => {
                     telefono: telefono
                 })
             });
+    
             const result = await response.json();
-            Alert.alert("Te has Registrado!");
-            navigation.navigate("LoginScreen");
+            //console.log("3")
+            if (response.status === 201) {
+                // Registro exitoso
+                //console.log("4")
+                Alert.alert("¡Registro exitoso!", result.message);
+                navigation.navigate("LoginScreen"); // Redirigir al login
+            } else {
+                // Error al crear el usuario
+                //console.log("5")
+                Alert.alert("Error", result.error || "No se pudo crear el usuario");
+            }
         } catch (error) {
             console.error("Error al crear usuario", error);
+            Alert.alert("Error", "Hubo un problema con la conexión");
         }
     };
+    
 
     // Fuentes Personalizadas
     const [fontsLoaded] = useFonts({

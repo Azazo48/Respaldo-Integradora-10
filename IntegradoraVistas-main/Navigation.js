@@ -113,6 +113,10 @@ function Mytabs() {
         const loadUserType = async () => {
             try {
                 const storedUserType = await AsyncStorage.getItem("userType");
+                if (storedUserType == "admin"){
+                    storedUserType = null
+                }
+                console.log(storedUserType)
                 setUserType(storedUserType || null);
             } catch (error) {
                 console.error("Error obteniendo user", error);

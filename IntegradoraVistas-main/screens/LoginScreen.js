@@ -14,7 +14,7 @@ const LoginScreen = () => {
             Alert.alert("Error", "El correo debe ser válido");
             return;
         }
-        if (contrasena.length < 2) { // Modificar en la versión final (actualmente en 2 para facilitar pruebas)
+        if (contrasena.length < 6) { // Ajustado a 6 caracteres
             Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
             return;
         }
@@ -24,34 +24,30 @@ const LoginScreen = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    correo: correo,
-                    contrasena: contrasena,
-                })
+                body: JSON.stringify({ correo, contrasena })
             });
+    
+            if (!response.ok) { // Manejo de errores
+                const errorMessage = await response.text();
+                console.error("Error en login:", errorMessage);
+                Alert.alert("Error", "Correo o contraseña incorrectos");
+                return;
+            }
+    
             const data = await response.json();
-            if (data && data[0] && data[0][0] && data[0][0].id) {
-                await AsyncStorage.setItem("userType", data[0][0].tipo.toString());
-                const tipo = data[0][0].tipo
-                if (tipo == "usuario") {
-                    await AsyncStorage.setItem("userId", data[0][0].id.toString());
-                    console.log("user id", data[0][0].id.toString())
-                }
-                if (tipo == "empresa") {
-                    await AsyncStorage.setItem("empresaId", data[0][0].id.toString());
-                    console.log("Empresa id", data[0][0].id.toString())
-                }
-                const userType = await AsyncStorage.getItem("userType");
-                //console.log(data[0][0].id)
-                //console.log(data[0][0].tipo)
-                //console.log(data)
-                if(userType == "empresa"){
+            console.log("Respuesta del servidor:", data); // <-- Importante para debug
+    
+            if (data.id) { 
+                await AsyncStorage.setItem("userType", data.tipo.toString());
+                await AsyncStorage.setItem("userId", data.id.toString());
+    
+                console.log("Usuario ID:", data.id, "Tipo:", data.tipo);
+    
+                if (data.tipo === "empresa") {
                     navigation.navigate("HomeScreen");
-                }
-                if(userType == "usuario"){
+                } else if (data.tipo === "usuario") {
                     navigation.navigate("PerfilScreen");
                 }
-                
             } else {
                 Alert.alert("Error en las credenciales");
             }
@@ -60,6 +56,8 @@ const LoginScreen = () => {
             Alert.alert("Error de conexión");
         }
     };
+    
+    
 
     // Fuentes Personalizadas
     const [fontsLoaded] = useFonts({
