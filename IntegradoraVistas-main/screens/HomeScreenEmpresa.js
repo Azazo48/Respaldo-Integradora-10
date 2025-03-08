@@ -54,7 +54,7 @@ const HomeLocalScreen = () => {
             }
           };
           fetchServiciosEmpresa();
-            const intervalo = setInterval(fetchServiciosEmpresa, 20000);
+            const intervalo = setInterval(fetchServiciosEmpresa, 5000);
             return () => clearInterval(intervalo);
 }, []);
 

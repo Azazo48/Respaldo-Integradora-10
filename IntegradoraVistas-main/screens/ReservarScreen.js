@@ -7,106 +7,72 @@ import { useNavigation } from '@react-navigation/native';
 const ReservarScreen = ({ route }) => {
     const navigation = useNavigation(); 
     const { servicio } = route.params;
-    console.log(servicio)
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [userId, setUserId] = useState('');
-    
+    const [isLoading, setIsLoading] = useState(false); // Estado para que no haga muchas presiones en el boton @ezer 
     const today = new Date().toISOString().split("T")[0];
 
     const horarios = [
-        "10:00",
-        "10:30",
-        "11:00",
-        "11:30",
-        "12:00",
-        "12:30",
-        "13:00",
-        "13:30",
-        "14:00",
-        "14:30",
-        "15:00",
-        "15:30",
-        "15:00",
-        "15:30",
-        "16:00",
-        "16:30",
-        "17:00",
-        "17:30",
-        "18:00",
+        "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+        "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+        "16:00", "16:30", "17:00", "17:30", "18:00",
     ];
 
-        useEffect(() => {
+    useEffect(() => {
         const loadUserId = async () => {
             try {
-                AsyncStorage.getItem("userId").then((storedUserId) => {
-                    setUserId(storedUserId)
-                });
+                const storedUserId = await AsyncStorage.getItem("userId");
+                setUserId(storedUserId);
             } catch (error) {
                 console.error("Error obteniendo userId", error);
             }
         };
-
         loadUserId();
-        const intervalo = setInterval(loadUserId, 3000);
-
-        return () => clearInterval(intervalo);
     }, []);
 
     const reservarCita = async () => {
-        if (!selectedDate || !selectedTime) {
-            alert("dos")
-            //Alert.alert("Error", "Debes seleccionar un día y una hora.");
-            return;
-        }
-        // -idempresa -idusuario -idservicio fecha hora
-        console.log("usuario",userId)
-        console.log("Servicio",servicio.id)
-        console.log("empresa", servicio.empresa)
-        console.log("fecha", selectedDate)
-        console.log("hora", selectedTime)
+        if (!selectedDate || !selectedTime || isLoading) return;
+
+        setIsLoading(true);
+
         try {
             const response = await fetch('https://solobackendintegradora.onrender.com/citas', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     empresa: servicio.empresa,
                     usuario: userId,
                     servicio: servicio.id,
                     fecha: selectedDate,
-                    hora: selectedTime
-                })
+                    hora: selectedTime,
+                }),
             });
-            const result = await response.json();
-            Alert.alert( "Reserva Confirmada", `Tu cita está programada para el ${selectedDate} a las ${selectedTime}.` );
-            navigation.navigate("HomeScreen");
+
+            if (response.ok) {
+                Alert.alert("Reserva Confirmada", `Tu cita está programada para el ${selectedDate} a las ${selectedTime}.`);
+                navigation.navigate("HomeScreen");
+            } else {
+                Alert.alert("Error", "Hubo un problema al reservar la cita.");
+                setIsLoading(false); // Reactiva el botón en caso de error
+            }
         } catch (error) {
             console.error("Error al crear la cita", error);
+            setIsLoading(false); // Reactiva el botón si hay un fallo en la petición
         }
-        //Alert.alert( "Reserva Confirmada", `Tu cita está programada para el ${selectedDate} a las ${selectedTime}.` );
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.infoContainer}>
                 <Text style={styles.serviceTitle}>{servicio.nombre}</Text>
-                <Text style={styles.serviceDescription}>
-                    {servicio.duracion} - {servicio.precio}
-                </Text>
+                <Text style={styles.serviceDescription}>{servicio.duracion} - {servicio.precio}</Text>
             </View>
 
             <Calendar
                 onDayPress={(day) => setSelectedDate(day.dateString)}
-                markedDates={{
-                    [selectedDate]: {
-                        selected: true,
-                        marked: true,
-                        selectedColor: "#266150",
-                    },
-                }}
+                markedDates={{ [selectedDate]: { selected: true, marked: true, selectedColor: "#266150" } }}
                 minDate={today}
                 theme={{
                     selectedDayBackgroundColor: "#6B3F87",
@@ -124,18 +90,10 @@ const ReservarScreen = ({ route }) => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        style={[
-                            styles.timeSlot,
-                            selectedTime === item && styles.selectedTimeSlot,
-                        ]}
+                        style={[styles.timeSlot, selectedTime === item && styles.selectedTimeSlot]}
                         onPress={() => setSelectedTime(item)}
                     >
-                        <Text
-                            style={[
-                                styles.timeSlotText,
-                                selectedTime === item && styles.selectedTimeSlotText,
-                            ]}
-                        >
+                        <Text style={[styles.timeSlotText, selectedTime === item && styles.selectedTimeSlotText]}>
                             {item}
                         </Text>
                     </TouchableOpacity>
@@ -143,8 +101,12 @@ const ReservarScreen = ({ route }) => {
                 showsHorizontalScrollIndicator={false}
             />
 
-            <TouchableOpacity style={styles.reserveButton} onPress={reservarCita}>
-                <Text style={styles.reserveButtonText}>Reservar</Text>
+            <TouchableOpacity
+                style={[styles.reserveButton, isLoading && styles.disabledButton]} 
+                onPress={reservarCita}
+                disabled={isLoading} // aqui hace lo del boton para que no presione muchas veces
+            >
+                <Text style={styles.reserveButtonText}>{isLoading ? "Reservando..." : "Reservar"}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -208,12 +170,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 20,
     },
+    disabledButton: {
+        backgroundColor: "#A0A0A0", 
+    },
     reserveButtonText: {
         color: "#fff",
         fontSize: 18,
         fontWeight: "bold",
     },
 });
-
 
 export default ReservarScreen;

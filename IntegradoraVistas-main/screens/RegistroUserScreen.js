@@ -11,31 +11,41 @@ const RegistroUserScreen = () => {
     const [contrasena, setContrasena] = useState('');
     const [telefono, setTelefono] = useState('');
 
+    const validarCorreo = (email) => {
+        const correoLower = email.toLowerCase();
+        const regex = /^(\w+([.-]?\w+)*)@(gmail|hotmail|outlook)\.com$/;
+        return regex.test(correoLower);
+    };
+
+    const validarContrasena = (password) => {
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{7,}$/;
+        return regex.test(password);
+    };
+
+    const validarTelefono = (phone) => {
+        const regex = /^\d{10}$/;
+        return regex.test(phone);
+    };
+
     const crearnuevousuario = async () => {
-        // Validaciones de campos
         if (!nombre.trim()) {
             Alert.alert("Error", "El nombre es obligatorio");
-            console.log("1")
             return;
         }
         if (!apellido.trim()) {
             Alert.alert("Error", "Los apellidos son obligatorios");
-            console.log("1")
             return;
         }
-        if (!correo.includes('@')) {
-            Alert.alert("Error", "El correo debe ser válido");
-            //console.log("1")
+        if (!validarCorreo(correo)) {
+            Alert.alert("Error", "El correo debe ser válido y pertenecer a Gmail, Hotmail o Outlook");
             return;
         }
-        if (contrasena.length < 6) {
-            Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
-            //console.log("1")
+        if (!validarContrasena(contrasena)) {
+            Alert.alert("Error", "La contraseña debe tener al menos 7 caracteres, una mayúscula, un número y un carácter especial");
             return;
         }
-        if (!telefono.trim() || telefono.length < 10) {
-            Alert.alert("Error", "El número de teléfono debe tener al menos 10 dígitos");
-            //console.log("1")
+        if (!validarTelefono(telefono)) {
+            Alert.alert("Error", "El número de teléfono debe tener exactamente 10 dígitos");
             return;
         }
     
@@ -50,7 +60,7 @@ const RegistroUserScreen = () => {
                 body: JSON.stringify({
                     nombre: nombre,
                     apellido: apellido,
-                    correo: correo,
+                    correo: correo.toLowerCase(),
                     contrasena: contrasena,
                     telefono: telefono
                 })

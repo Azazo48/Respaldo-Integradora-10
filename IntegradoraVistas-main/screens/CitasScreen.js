@@ -99,7 +99,7 @@ const CitasScreen = () => {//https://solobackendintegradora.onrender.com/citas/u
                 <Text style={styles.serviceDetails}>Fecha: {cita.fecha}</Text>
                 <Text style={styles.serviceDetails}>Hora: {cita.hora}</Text>
                 <Text style={styles.serviceDetails}>Precio: {cita.precio}</Text>
-                <Text style={styles.serviceDetails}>Local: {cita.local}</Text>
+                <Text style={styles.serviceDetails}>Local: {cita.empresa}</Text>
     
                 <TouchableOpacity
                   style={styles.cancelButton}

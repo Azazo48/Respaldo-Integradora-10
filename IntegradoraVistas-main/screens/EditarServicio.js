@@ -40,7 +40,7 @@ const EditarServicio = () => {
             }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (servicio) => {
     Alert.alert(
       "Eliminar servicio",
       "¿Estás seguro de que deseas eliminar este servicio?",
@@ -51,7 +51,12 @@ const EditarServicio = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              const response = await fetch(`https://solobackendintegradora.onrender.com/empresas/${empresaId}`)
+              const response = await fetch(`https://solobackendintegradora.onrender.com/servicios/${servicio}`, {
+                method: "DELETE",
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
               const result = await response.json();
               console.log(result)
               console.log("Eliminado")
@@ -93,7 +98,7 @@ const EditarServicio = () => {
         <Text style={styles.buttonText}>Guardar Cambios</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(servicio.id)}>
         <Text style={styles.buttonText}>Eliminar Servicio</Text>
       </TouchableOpacity>
     </View>

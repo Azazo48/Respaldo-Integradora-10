@@ -15,35 +15,57 @@ const RegistroEmpresaScreen = () => {
     const [contrasena, setContrasena] = useState('');
     const navigation = useNavigation();
 
+    const validarCorreo = (email) => {
+        const correoLower = email.toLowerCase();
+        const regex = /^(\w+([.-]?\w+)*)@(gmail|hotmail|outlook)\.com$/;
+        return regex.test(correoLower);
+    };
+
+    const validarContrasena = (password) => {
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{7,}$/;
+        return regex.test(password);
+    };
+
+    const validarTelefono = (phone) => {
+        const regex = /^\d{10}$/;
+        return regex.test(phone);
+    };
+
+    const validarRFC = (rfc) => {
+        const regex = /^[A-Za-z0-9]{12}$/;
+        return regex.test(rfc);
+    };
+
     const crearNuevaEmpresa = async () => {
         if (!nombre.trim()) {
             Alert.alert("Error", "El nombre de la empresa es obligatorio");
             return;
         }
-        if (!rfc.trim()) {
-            Alert.alert("Error", "El RFC es obligatorio");
+        if (!validarRFC(rfc)) {
+            Alert.alert("Error", "El RFC debe contener 12 caracteres alfanuméricos");
             return;
         }
         if (!direccion.trim()) {
             Alert.alert("Error", "La dirección es obligatoria");
             return;
         }
-        if (!correoEmpresa.includes('@')) {
-            Alert.alert("Error", "El correo de la empresa debe ser válido");
+        if (!validarCorreo(correoEmpresa)) {
+            Alert.alert("Error", "El correo de la empresa debe ser válido y pertenecer a Gmail, Hotmail o Outlook");
             return;
         }
-        if (!telefono.trim() || telefono.length < 10) {
-            Alert.alert("Error", "El teléfono debe ser válido");
+        if (!validarTelefono(telefono)) {
+            Alert.alert("Error", "El teléfono debe contener exactamente 10 dígitos");
             return;
         }
-        if (!correoAdmin.includes('@')) {
-            Alert.alert("Error", "El correo del administrador debe ser válido");
+        if (!validarCorreo(correoAdmin)) {
+            Alert.alert("Error", "El correo del administrador debe ser válido y pertenecer a Gmail, Hotmail o Outlook");
             return;
         }
-        if (contrasena.length < 6) {
-            Alert.alert("Error", "La contraseña debe tener al menos 6 caracteres");
+        if (!validarContrasena(contrasena)) {
+            Alert.alert("Error", "La contraseña debe tener al menos 7 caracteres, una mayúscula, un número y un carácter especial");
             return;
         }
+
         try {
             const response = await fetch('https://solobackendintegradora.onrender.com/empresas', {
                 method: 'POST',
@@ -54,9 +76,9 @@ const RegistroEmpresaScreen = () => {
                     nombre: nombre,
                     rfc: rfc,
                     direccion: direccion,
-                    correoEmpresa: correoEmpresa,
+                    correoEmpresa: correoEmpresa.toLowerCase(),
                     telefono: telefono,
-                    correoAdmin: correoAdmin,
+                    correoAdmin: correoAdmin.toLowerCase(),
                     contrasena: contrasena
                 })
             });
